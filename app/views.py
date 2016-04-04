@@ -15,21 +15,26 @@ def index(request):
         return render(request, 'index_page.html', {})
     elif request.method=="POST":
         query = request.POST["check"]
-        #how did the control arrive here? is the request for register or for login?
+        #check if we are here for login or for registering
         if query=="register":
             fullname = request.POST["fullname"]
-            email = request.POST["email"]
+            email = (request.POST["email"])
             number = request.POST["number"]
-            password = request.POST["password"]
+            password = (request.POST["password"])
             confirm_password = request.POST["confirm_password"]
             username=email
+            print (password)
             user=User(username=username,first_name=fullname,email=email,password=password)
-            # member=
+            #add validations here or in the page js
             if User.objects.filter(username=username):
                 messages.error(request, "User already registered")
                 return render(request,"index_page.html", {})
             user.save()
-            # member.save()
+            member=Member(user=user,name=fullname,email=email,number=number)
+            member.save()
+            user = authenticate(username=username,password=password)
+            print (user)
+            login(request,user)
             return HttpResponseRedirect("/playlist")
         #if the person filled the login form
         else:
@@ -38,17 +43,17 @@ def index(request):
             username=email
             user=authenticate(username=username,password=password)
             if user is not None:
-                # member=Member.objects.get(user=user)
-                # you also have to add a check if this query fails - say, for the admin
-                # Member.DoesNotExist
-                return HttpResponse("huhaha")
+                try:
+                    member=Member.objects.get(user=user)
+                    login(request,user)
+                    return HttpResponseRedirect('/playlist')
+                except Member.DoesNotExist:
+                    # this can only happen in case of admin/special user who did not create a user through the app
+                    messages.error(request,"Some Error Ocurred")
+                    return render(request,"index_page.html", {})
             else:
                 messages.error(request,"Invalid email-password combination")
                 return render(request,"index_page.html", {})
-
-
-
-
 
 @login_required
 def playlist(request):
