@@ -5,6 +5,32 @@
     <title>Musick - Login</title>
 </head>
 <body>
-hey is this working?
+<h3> Register or Login</h3>
+<form action="/" method="post" name="register_form">
+    {% csrf_token %}
+    Full Name:
+    <input name="fullname" value="{{ member.name }}" type="text" >
+    Email:
+    <input name="email" value="{{ member.email }}" type="text" >
+    Phone Number:
+    <input name="number" value="{{ member.number }}" type="text" >
+    Password:
+    <input name="password" type="password" >
+    Confirm Password:
+    <input name="confirm_password" type="password" class="form-control">
+    <input type="hidden" name="check" value="register">
+    <button class="btn btn-primary btn-lg" type="submit">Register</button>
+
+</form>
+<form action="/" method="post" name="login_form">
+    {% csrf_token %}
+    Email:
+    <input name="email" type="text" >
+    Password:
+    <input name="password" type="password" >
+    <input type="hidden" name="check" value="login">
+    <button class="btn btn-primary btn-lg" type="submit">Login</button>
+
+</form>
 </body>
 </html>

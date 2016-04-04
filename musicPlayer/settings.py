@@ -71,9 +71,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'musicPlayer.wsgi.application'
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-TEMPLATE_DIRS = (os.path.join(PROJECT_ROOT, 'templates'),)
+# PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+#
+# TEMPLATE_DIRS = (os.path.join(PROJECT_ROOT, 'templates'),)
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
