@@ -67,15 +67,12 @@ def playlist(request):
     #to upload a song. Note that for now, I am just allowing the user to upload in .mp3 format
     if request.method=="POST":
         # temp=request.POST.getlist("song")[0]
-        form = UploadSongForm(request.POST)
+        form = UploadSongForm(request.POST,request.FILES)
         print (request.FILES)
         if form.is_valid():
-            print (request.FILES)
-            print ("as")
-            # print (HttpRequest.FILES)
-            # with open("abd.mp3", 'wb+') as destination:
-            #     for chunk in temp.chunks():
-            #         destination.write(chunk)
+            name=str(request.FILES["fi"])
+            song = Song(name=name,file=form.cleaned_data["fi"],uploader=member)
+            song.save()
     form = UploadSongForm()
     songs = list(Song.objects.all())
     return render(request,"playlist.html",{"member": member, "songs": songs,'form': form})

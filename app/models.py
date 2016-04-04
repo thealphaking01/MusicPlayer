@@ -22,6 +22,7 @@ class Song(models.Model):
         db_table = 'song'
 
     name = models.TextField(max_length=255)
+    file = models.FileField(default=None)
     uploader = models.ForeignKey(Member)
     votes = models.IntegerField(default=0)
 
