@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Playlist - List of all Songs!</title>
+</head>
+<body>
+Hello {{ member.name }}
+<br>
+<form method="post" name="form" enctype = "multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="fi" accept=".mp3">
+    <!--{{ form }}-->
+    <input type="submit">
+</form>
+{% for s in songs %}
+<br>
+{{ s }}
+<br>
+{% endfor %}
+<br>
+</body>
+</html>

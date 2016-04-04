@@ -1,13 +1,17 @@
 from django.shortcuts import render, redirect, render_to_response
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+
+from app.forms import UploadSongForm
 from app.models import *
+import sys
 
 # We first check that if a user is already logged in. In case he isn't and he wants to register/login, we do the required.
 def index(request):
+    print ("hoho")
     if request.method=="GET":
         user = request.user
         if user.is_authenticated():
@@ -58,4 +62,21 @@ def index(request):
 
 @login_required
 def playlist(request):
+    user = request.user
+    member = Member.objects.get(user=user)
+    #to upload a song. Note that for now, I am just allowing the user to upload in .mp3 format
+    if request.method=="POST":
+        # temp=request.POST.getlist("song")[0]
+        form = UploadSongForm(request.POST)
+        print (request.FILES)
+        if form.is_valid():
+            print (request.FILES)
+            print ("as")
+            # print (HttpRequest.FILES)
+            # with open("abd.mp3", 'wb+') as destination:
+            #     for chunk in temp.chunks():
+            #         destination.write(chunk)
+    form = UploadSongForm()
+    songs = list(Song.objects.all())
+    return render(request,"playlist.html",{"member": member, "songs": songs,'form': form})
     return HttpResponse("the playlist")
