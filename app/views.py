@@ -23,18 +23,19 @@ def index(request):
             password = (request.POST["password"])
             confirm_password = request.POST["confirm_password"]
             username=email
-            print (password)
-            user=User(username=username,first_name=fullname,email=email,password=password)
+            print (fullname,email,number,password,confirm_password)
             #add validations here or in the page js
             if User.objects.filter(username=username):
                 messages.error(request, "User already registered")
                 return render(request,"index_page.html", {})
+            user=User.objects.create_user(username=username,first_name=fullname,email=email,password=password)
             user.save()
             member=Member(user=user,name=fullname,email=email,number=number)
             member.save()
             user = authenticate(username=username,password=password)
             print (user)
             login(request,user)
+            print ("heya")
             return HttpResponseRedirect("/playlist")
         #if the person filled the login form
         else:
