@@ -3,9 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Playlist - List of all Songs!</title>
+    <script>
+        function vote(id,val){
+             var xhttp = new XMLHttpRequest();
+             xhttp.onreadystatechange = function() {
+             if (xhttp.readyState == 4 && xhttp.status == 200) {
+             document.getElementById(id).innerHTML = xhttp.responseText;
+    }
+  };
+  xhttp.open("GET", "/upvote?id=" + id + "&val=" + val , true);
+  xhttp.send();
+
+        }
+    </script>
 </head>
 <body>
-Hello {{ member.name }}
+Hello {{ member.name }} {{ member.id }}
+<p id="heya"></p>
 <br>
 <form method="post" name="form" enctype = "multipart/form-data">
     {% csrf_token %}
@@ -15,9 +29,17 @@ Hello {{ member.name }}
 </form>
 {% for s in songs %}
 <br>
-{{ s.name }}
+<audio controls>
+<source src="{{ s.file.url }}" type="audio/mp3">
+</audio>
+    {{ s.name }}
+<br>
+Number of Votes Recieved : <p id="{{ s.id }}">{{ s.votes }} </p><br>
+<button onclick="vote({{ s.id }},1)">Upvote</button>
+<button onclick="vote({{ s.id }},2)">Downvote</button>
 <br>
 {% endfor %}
 <br>
+<a href="/huha">click to test</a>
 </body>
 </html>

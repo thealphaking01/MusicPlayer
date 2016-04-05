@@ -76,4 +76,34 @@ def playlist(request):
     form = UploadSongForm()
     songs = list(Song.objects.all())
     return render(request,"playlist.html",{"member": member, "songs": songs,'form': form})
-    return HttpResponse("the playlist")
+
+@login_required
+def upvote(request):
+    user=request.user
+    member = Member.objects.get(user=user)
+    print (member)
+    print (request.GET)
+    id=request.GET["id"]
+    val=request.GET["val"]
+    print (val)
+    #if you want to either upvote or downvote
+    if val!=3:
+        vote=M2SVote.objects.filter(song__id=id,member=member)
+        if len(vote)>0:
+            return # you have already cast a vote and are now trying to do something fishy
+        else:
+            song=Song.objects.get(id=id)
+            vote=M2SVote(song=song,member=member)
+            if val == "1":
+                vote.upvote=True
+                song.votes= song.votes+1
+            else:
+                vote.upvote=False
+                song.votes=song.votes-1
+            song.save()
+            vote.save()
+            return HttpResponse(str(song.votes))
+    #if you want to cancel your previous vote
+    else:
+        pass
+    return HttpResponse(str(member.name))
