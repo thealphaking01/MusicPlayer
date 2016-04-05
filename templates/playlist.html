@@ -9,6 +9,15 @@
              xhttp.onreadystatechange = function() {
              if (xhttp.readyState == 4 && xhttp.status == 200) {
              document.getElementById(id).innerHTML = xhttp.responseText;
+             if(val=="1" || val=="2")
+             { document.getElementById('upvote'+id).disabled=true;
+             document.getElementById('downvote'+id).disabled=true;
+              document.getElementById('cancel'+id).disabled=false;}
+             else {
+             document.getElementById('upvote'+id).disabled=false;
+             document.getElementById('downvote'+id).disabled=false;
+             document.getElementById('cancel'+id).disabled=true;
+             }
     }
   };
   xhttp.open("GET", "/upvote?id=" + id + "&val=" + val , true);
@@ -18,8 +27,8 @@
     </script>
 </head>
 <body>
-Hello {{ member.name }} {{ member.id }}
-<p id="heya"></p>
+Hello {{ member.name }}
+You can upload a song here -
 <br>
 <form method="post" name="form" enctype = "multipart/form-data">
     {% csrf_token %}
@@ -27,7 +36,9 @@ Hello {{ member.name }} {{ member.id }}
     <!--{{ form }}-->
     <input type="submit">
 </form>
-{% for s in songs %}
+<br>
+Or take a look at the songs that are already uploaded -
+{% for s,v in songs %}
 <br>
 <audio controls>
 <source src="{{ s.file.url }}" type="audio/mp3">
@@ -35,11 +46,11 @@ Hello {{ member.name }} {{ member.id }}
     {{ s.name }}
 <br>
 Number of Votes Recieved : <p id="{{ s.id }}">{{ s.votes }} </p><br>
-<button onclick="vote({{ s.id }},1)">Upvote</button>
-<button onclick="vote({{ s.id }},2)">Downvote</button>
+<button id="upvote{{ s.id }}" onclick="vote({{ s.id }},1)" {% if v %} disabled {% endif %}>Upvote</button>
+<button id="downvote{{ s.id }}" onclick="vote({{ s.id }},2)" {% if v %} disabled {% endif %}>Downvote</button>
+<button id="cancel{{ s.id }}" onclick="vote({{ s.id }},3)" {% if not v %} disabled {% endif %}>Cancel Previous Vote</button>
 <br>
 {% endfor %}
 <br>
-<a href="/huha">click to test</a>
 </body>
 </html>

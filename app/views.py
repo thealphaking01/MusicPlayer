@@ -11,7 +11,6 @@ import sys
 
 # We first check that if a user is already logged in. In case he isn't and he wants to register/login, we do the required.
 def index(request):
-    print ("hoho")
     if request.method=="GET":
         user = request.user
         if user.is_authenticated():
@@ -29,8 +28,15 @@ def index(request):
             username=email
             print (fullname,email,number,password,confirm_password)
             #add validations here or in the page js
+            # TODO: Please not that validations have not been done
             if User.objects.filter(username=username):
                 messages.error(request, "User already registered")
+                return render(request,"index_page.html", {})
+            if password!=confirm_password:
+                messages.error(request,"The two passwords should match")
+                return render(request,"index_page.html", {})
+            if len(password)<8:
+                messages.error(request,"Password is too short")
                 return render(request,"index_page.html", {})
             user=User.objects.create_user(username=username,first_name=fullname,email=email,password=password)
             user.save()
@@ -74,9 +80,20 @@ def playlist(request):
             song = Song(name=name,file=form.cleaned_data["fi"],uploader=member)
             song.save()
     form = UploadSongForm()
-    songs = list(Song.objects.all())
+    songs = Song.objects.order_by('-votes')
+    votes=[]
+    #this loop is to find out songs the particular user has already voted for
+    for i in songs:
+        s = M2SVote.objects.filter(song=i,member=member)
+        if len(s)>0:
+            votes.append(True)
+        else:
+            votes.append(False)
+    songs = zip(songs,votes)
+    # songs.sort(key=lambda x: x.votes,reverse=True)
     return render(request,"playlist.html",{"member": member, "songs": songs,'form': form})
 
+#this function handles the upvote api.
 @login_required
 def upvote(request):
     user=request.user
@@ -87,7 +104,7 @@ def upvote(request):
     val=request.GET["val"]
     print (val)
     #if you want to either upvote or downvote
-    if val!=3:
+    if val!="3":
         vote=M2SVote.objects.filter(song__id=id,member=member)
         if len(vote)>0:
             return # you have already cast a vote and are now trying to do something fishy
@@ -105,5 +122,15 @@ def upvote(request):
             return HttpResponse(str(song.votes))
     #if you want to cancel your previous vote
     else:
-        pass
-    return HttpResponse(str(member.name))
+        song=Song.objects.get(id=id)
+        vote=M2SVote.objects.get(song=song,member=member)
+        if vote == None:
+            return HttpResponse("Some Error Ocurred. Wrong request.")
+        else:
+            if vote.upvote==True:
+                song.votes-=1
+            else:
+                song.votes+=1
+            song.save()
+            vote.delete()
+            return HttpResponse(str(song.votes))
