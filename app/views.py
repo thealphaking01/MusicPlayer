@@ -134,3 +134,7 @@ def upvote(request):
             song.save()
             vote.delete()
             return HttpResponse(str(song.votes))
+
+def member_logout(request):
+    logout(request)
+    return HttpResponseRedirect('/')

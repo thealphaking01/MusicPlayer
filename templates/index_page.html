@@ -5,6 +5,13 @@
     <title>Musick - Login</title>
 </head>
 <body>
+{% block msgblock %}
+            {% if messages %}
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+            {% endif %}
+            {% endblock %}
 <h3> Register or Login</h3>
 <form action="/" method="post" name="register_form">
     {% csrf_token %}

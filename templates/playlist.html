@@ -37,6 +37,8 @@ You can upload a song here -
     <input type="submit">
 </form>
 <br>
+<a href="/logout/">Logout</a>
+<br>
 Or take a look at the songs that are already uploaded -
 {% for s,v in songs %}
 <br>
@@ -45,7 +47,7 @@ Or take a look at the songs that are already uploaded -
 </audio>
     {{ s.name }}
 <br>
-Number of Votes Recieved : <p id="{{ s.id }}">{{ s.votes }} </p><br>
+Score ( Upvotes - Downvotes ) : <p id="{{ s.id }}">{{ s.votes }}</p> <br>
 <button id="upvote{{ s.id }}" onclick="vote({{ s.id }},1)" {% if v %} disabled {% endif %}>Upvote</button>
 <button id="downvote{{ s.id }}" onclick="vote({{ s.id }},2)" {% if v %} disabled {% endif %}>Downvote</button>
 <button id="cancel{{ s.id }}" onclick="vote({{ s.id }},3)" {% if not v %} disabled {% endif %}>Cancel Previous Vote</button>
