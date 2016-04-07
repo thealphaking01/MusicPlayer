@@ -191,7 +191,11 @@ def my_playlists(request):
     user=request.user
     member = Member.objects.get(user=user)
     playlists = Playlist.objects.filter(member=member)
-    return render(request,"my_playlists.html",{'playlists': playlists, "member": member,'my':True})
+    if len(playlists)==0:
+        sz=True
+    else:
+        sz=False
+    return render(request,"my_playlists.html",{'playlists': playlists, "member": member,'sz':sz})
 
 #a person can only view a playlist if it either belongs to him or the playlist is public
 @login_required

@@ -10,7 +10,9 @@
 <a href="/shared_playlists">View Public Playlists</a> <br>
 <a href="/my_playlists">View My Playlists</a> <br><a href="logout">Logout </a> <br> <br>
 
-
+{% if sz %}
+You have no Playlists!! Click on the option above to create one now!
+{% else %}
 Your Playlists: <br>
 {% for p in playlists %}
  <br>
@@ -21,5 +23,6 @@ Nature : {% if p.shareable %} Public {% else %} Private {% endif %} <br>
 <a href="/delete_playlist/{{ p.id }}">Delete Playlist</a>
 <br>
 {% endfor %}
+{% endif %}
 </body>
 </html>

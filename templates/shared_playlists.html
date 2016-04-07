@@ -11,10 +11,10 @@
 <a href="/shared_playlists">View Public Playlists</a> <br>
 <a href="/my_playlists">View My Playlists</a> <br><a href="logout">Logout </a> <br> <br>
 
-Playlists shared by other users:
-{% for p,s in playlists %}
-Name of Playlist : {{ p.name }}
-Shared by : {{ s }}
+All Public Playlists : <br>
+{% for p,s in playlists %} <br> <br>
+Name of Playlist : {{ p.name }} <br> <br>
+Shared by : {{ s }} <br>
 <a href="/playlist/{{ p.id }}">View Playlist</a>
 <button onclick="">Clone Playlist</button>
 {% endfor %}
