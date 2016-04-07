@@ -193,12 +193,12 @@ def my_playlists(request):
     playlists = Playlist.objects.filter(member=member)
     return render(request,"my_playlists.html",{'playlists': playlists, "member": member,'my':True})
 
+#a person can only view a playlist if it either belongs to him or the playlist is public
 @login_required
 def view_playlist(request,id):
-    print (id)
-    playlist=Playlist.objects.get(id=id)
-    print (playlist)
-    if playlist is None:
+    try:
+        playlist=Playlist.objects.get(id=id)
+    except:
         messages.error(request,"No such playlist exists")
         return HttpResponseRedirect('/my_playlists')
     user=request.user
@@ -212,3 +212,23 @@ def view_playlist(request,id):
     for i in p2s:
         songs.append(i.song)
     return render (request,"view_playlist.html",{'songs': songs,'val': val, 'id': id})
+
+#this function deletes a playlist. Should be a post request, but didnt feel the need to do that here
+@login_required
+def delete_playlist(request,id):
+    try:
+        playlist=Playlist.objects.get(id=id)
+    except:
+        messages.error(request,"No such playlist exists")
+        return HttpResponseRedirect('/my_playlists')
+    user=request.user
+    member=Member.objects.get(user=user)
+    if playlist.member!=member:
+        messages.error(request,"You were not authorised for that operation")
+    else:
+        p2s=P2S.objects.filter(playlist=playlist)
+        for i in p2s:
+            i.delete()
+        playlist.delete()
+        messages.success(request,"Playlist Deleted Successfully")
+        return HttpResponseRedirect("/my_playlists")
