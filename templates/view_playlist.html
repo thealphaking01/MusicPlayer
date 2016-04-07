@@ -13,6 +13,14 @@
 <a href="/my_playlists">View My Playlists</a> <br><a href="logout">Logout </a> <br> <br>
 
 <br>
+{% block msgblock %}
+            {% if messages %}
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+            {% endif %}
+            {% endblock %}
+<br>
 {% if val %}
 <a href="edit_playlist/{{ id }}">Edit Your Playlist</a>
 {% endif %}

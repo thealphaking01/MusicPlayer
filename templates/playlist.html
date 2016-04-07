@@ -28,6 +28,13 @@
 </head>
 <body>
 Hello {{ member.name }}
+{% block msgblock %}
+            {% if messages %}
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+            {% endif %}
+            {% endblock %}
 You can upload a song here -
 <br>
 <form method="post" name="form" enctype = "multipart/form-data">

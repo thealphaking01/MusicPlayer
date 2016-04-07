@@ -11,7 +11,13 @@
 <a href="/shared_playlists">View Public Playlists</a> <br>
 <a href="/my_playlists">View My Playlists</a> <br>
 <a href="logout">Logout </a> <br> <br>
-
+{% block msgblock %}
+            {% if messages %}
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+            {% endif %}
+            {% endblock %}
 <form method="POST">
     {% csrf_token %}
     Enter the name of the new Playlist : <input type="text" name="name"> <br> <br>

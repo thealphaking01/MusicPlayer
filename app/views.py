@@ -151,7 +151,7 @@ def shared_playlists(request):
             if i.member==member:
                 shared_by.append("You")
             else:
-                shared_by.append(playlists.member.name)
+                shared_by.append(i.member.name)
         playlists=zip(playlists,shared_by)
         return render(request,"shared_playlists.html",{'member': member, 'playlists': playlists})
     # have to write something for POST request
@@ -159,7 +159,26 @@ def shared_playlists(request):
 #this is the clone API.
 @login_required
 def clone_playlist(request):
-    pass
+    user=request.user
+    member = Member.objects.get(user=user)
+    id = request.GET["id"]
+    try:
+        playlist = Playlist.objects.get(id=id)
+    except:
+        return HttpResponse("Some error ocurred")
+    if playlist.shareable ==False:
+        return HttpResponse("You are not authorised for cloning")
+    p=Playlist.objects.filter(clone_text=playlist.clone_text,member=member)
+    if len(p)>0:
+        return HttpResponse("Playlist has already been cloned")
+    else:
+        new_playlist= Playlist(clone_text=playlist.clone_text,name=playlist.name,shareable=False,member=member)
+        new_playlist.save()
+        p2s = P2S.objects.filter(playlist=playlist)
+        for i in p2s:
+            j=P2S(song=i.song,playlist=new_playlist)
+            j.save()
+        return HttpResponse("Playlist is successfully cloned to your profile. Open My Playlists to see changes")
 
 @login_required
 def create_playlist(request):

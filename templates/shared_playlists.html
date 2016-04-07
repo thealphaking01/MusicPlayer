@@ -3,6 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Shared Playlists</title>
+    <script>
+        function clone(id){
+             var xhttp = new XMLHttpRequest();
+             xhttp.onreadystatechange = function() {
+             if (xhttp.readyState == 4 && xhttp.status == 200) {
+             document.getElementById(id).innerHTML = xhttp.responseText;
+    }
+  };
+  xhttp.open("GET", "/clone_playlist?id=" + id , true);
+  xhttp.send();
+
+        }
+    </script>
 </head>
 <body>
 
@@ -10,13 +23,21 @@
 <a href="/create_playlist">Create a New Playlist</a> <br>
 <a href="/shared_playlists">View Public Playlists</a> <br>
 <a href="/my_playlists">View My Playlists</a> <br><a href="logout">Logout </a> <br> <br>
-
+{% block msgblock %}
+            {% if messages %}
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+            {% endif %}
+            {% endblock %}
+<br>
 All Public Playlists : <br>
 {% for p,s in playlists %} <br> <br>
 Name of Playlist : {{ p.name }} <br> <br>
 Shared by : {{ s }} <br>
 <a href="/playlist/{{ p.id }}">View Playlist</a>
-<button onclick="">Clone Playlist</button>
+<button onclick="clone({{ p.id }})">Clone Playlist</button>
+<p id="{{ p.id }}"></p>
 {% endfor %}
 </body>
 </html>

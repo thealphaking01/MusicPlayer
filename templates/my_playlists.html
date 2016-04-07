@@ -9,7 +9,14 @@
 <a href="/create_playlist">Create a New Playlist</a> <br>
 <a href="/shared_playlists">View Public Playlists</a> <br>
 <a href="/my_playlists">View My Playlists</a> <br><a href="logout">Logout </a> <br> <br>
-
+{% block msgblock %}
+            {% if messages %}
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+            {% endif %}
+            {% endblock %}
+<br> <br>
 {% if sz %}
 You have no Playlists!! Click on the option above to create one now!
 {% else %}
