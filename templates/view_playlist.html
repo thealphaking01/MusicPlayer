@@ -2,23 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Shared Playlists</title>
+    <title>View Playlist</title>
 </head>
 <body>
+
+<br>
 <a href="/all_songs"> View All Songs</a> <br>
 <a href="/create_playlist">Create a New Playlist</a> <br>
 <a href="/shared_playlists">View Public Playlists</a> <br>
 <a href="/my_playlists">View My Playlists</a> <br><a href="logout">Logout </a> <br> <br>
 
-
-Your Playlists: <br>
-{% for p in playlists %}
- <br>
-Name of Playlist : {{ p.name }}  <br>
-Nature : {% if p.shareable %} Public {% else %} Private {% endif %} <br>
-<a href="/playlist/{{ p.id }}">View Playlist</a> <br>
-<a href="/edit_playlist/{{ p.id }}">Edit Playlist</a> <br>
+<br>
+{% if val %}
+<a href="edit_playlist/{{ id }}">Edit Your Playlist</a>
+{% endif %}
+<br><br>
+{% for s in songs %}
+<br>
+<audio controls>
+<source src="{{ s.file.url }}" type="audio/mp3">
+</audio>
+    {{ s.name }}
 <br>
 {% endfor %}
+<br>
+
 </body>
 </html>

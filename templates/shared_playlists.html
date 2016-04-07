@@ -15,7 +15,7 @@ Playlists shared by other users:
 {% for p,s in playlists %}
 Name of Playlist : {{ p.name }}
 Shared by : {{ s }}
-<a href="/playlist/{{ p.id }}"></a>
+<a href="/playlist/{{ p.id }}">View Playlist</a>
 <button onclick="">Clone Playlist</button>
 {% endfor %}
 </body>

@@ -192,3 +192,23 @@ def my_playlists(request):
     member = Member.objects.get(user=user)
     playlists = Playlist.objects.filter(member=member)
     return render(request,"my_playlists.html",{'playlists': playlists, "member": member,'my':True})
+
+@login_required
+def view_playlist(request,id):
+    print (id)
+    playlist=Playlist.objects.get(id=id)
+    print (playlist)
+    if playlist is None:
+        messages.error(request,"No such playlist exists")
+        return HttpResponseRedirect('/my_playlists')
+    user=request.user
+    member=Member.objects.get(user=user)
+    if playlist.member!=member and playlist.shareable==False:
+        messages.error(request,"You are not authorised to view the playlist")
+        return HttpResponseRedirect('/my_playlists')
+    p2s= (P2S.objects.filter(playlist=playlist))
+    val = True if playlist.member==member else False
+    songs=[]
+    for i in p2s:
+        songs.append(i.song)
+    return render (request,"view_playlist.html",{'songs': songs,'val': val, 'id': id})
