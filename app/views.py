@@ -255,3 +255,27 @@ def delete_playlist(request,id):
         playlist.delete()
         messages.success(request,"Playlist Deleted Successfully")
         return HttpResponseRedirect("/my_playlists")
+
+#this is for the rate api
+@login_required
+def rate(request):
+    id=request.GET['id']
+    playlist = Playlist.objects.get(id=id)
+    val=request.GET['val']
+    user=request.user
+    member=Member.objects.get(user=user)
+    val=int(val)
+    rated = Rate.objects.filter(playlist=playlist,member=member)
+    if len(rated)==0:
+        playlist.rating =(( playlist.rating * playlist.users_rated)+val)/(playlist.users_rated+1)
+        playlist.users_rated+=1
+        playlist.save()
+        rate = Rate(playlist=playlist,member=member,value=val)
+        rate.save()
+        return HttpResponse(str(playlist.rating))
+    else:
+        r=rated[0]
+        playlist.rating = ((playlist.rating * playlist.users_rated) + val - r.value)/playlist.users_rated
+        playlist.save()
+        r.save()
+        return HttpResponse(str(playlist.rating))

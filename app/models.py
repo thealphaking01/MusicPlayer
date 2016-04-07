@@ -44,6 +44,8 @@ class Playlist(models.Model):
     name = models.TextField(default="Private Playlist")
     clone_text = models.TextField(max_length=255,default="")
     member = models.ForeignKey(Member)
+    users_rated = models.IntegerField(default=0)
+    rating = models.FloatField(default=0)
 
     def __str__(self): return self.name + str(self.member.name)
 
@@ -55,8 +57,17 @@ class P2S(models.Model):
     song=models.ForeignKey(Song)
     playlist = models.ForeignKey(Playlist)
 
+class Rate(models.Model):
+    class Meta:
+        db_table = 'rating'
+
+    member=models.ForeignKey(Member)
+    playlist = models.ForeignKey(Playlist)
+    value = models.IntegerField(default=0)
+
 admin.site.register(Member)
 admin.site.register(Song)
 admin.site.register(M2SVote)
 admin.site.register(Playlist)
 admin.site.register(P2S)
+admin.site.register(Rate)

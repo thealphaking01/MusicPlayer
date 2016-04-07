@@ -15,6 +15,23 @@
   xhttp.send();
 
         }
+        function rate(id){
+             var xhttp = new XMLHttpRequest();
+             xhttp.onreadystatechange = function() {
+             if (xhttp.readyState == 4 && xhttp.status == 200) {
+             x=document.getElementsByClassName(id+'class');
+              for (var i = 0; i < x.length; i++)
+             {
+             x[0].innerHTML = xhttp.responseText;
+             }
+
+    }
+  };
+  var a = document.getElementById('rate' + id).value; console.log(a)
+  xhttp.open("GET", "/rate?id=" + id + "&val=" + a , true);
+  xhttp.send();
+
+        }
     </script>
 </head>
 <body>
@@ -22,7 +39,7 @@
 <a href="/all_songs"> View All Songs</a> <br>
 <a href="/create_playlist">Create a New Playlist</a> <br>
 <a href="/shared_playlists">View Public Playlists</a> <br>
-<a href="/my_playlists">View My Playlists</a> <br><a href="logout">Logout </a> <br> <br>
+<a href="/my_playlists">View My Playlists</a> <br><a href="/logout">Logout </a> <br> <br>
 {% block msgblock %}
             {% if messages %}
             {% for message in messages %}
@@ -35,7 +52,12 @@ All Public Playlists : <br>
 {% for p,s in playlists %} <br> <br>
 Name of Playlist : {{ p.name }} <br> <br>
 Shared by : {{ s }} <br>
-<a href="/playlist/{{ p.id }}">View Playlist</a>
+Current Rating : {% if p.rating == 0  %} <p class="{{ p.id }}class">Hasn't been Rated Yet </p> {% else %}
+<p class="{{ p.id }}class">{{ p.rating }} </p> {% endif %} <br>
+<br>
+Want to Rate? Enter a number between 0 and 5 <input id="rate{{ p.id }}" type="text">
+<button onclick="rate({{ p.id }})">Submit</button>
+<br>    <a href="/playlist/{{ p.id }}">View Playlist</a>
 <button onclick="clone({{ p.id }})">Clone Playlist</button>
 <p id="{{ p.id }}"></p>
 {% endfor %}
