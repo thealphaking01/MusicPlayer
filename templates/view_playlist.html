@@ -22,9 +22,9 @@
             {% endblock %}
 <br>
 {% if val %}
-<a href="edit_playlist/{{ id }}">Edit Your Playlist</a>
+<a href="/edit_playlist/{{ id }}">Edit Your Playlist</a>
 {% endif %}
-<br><br>
+<br><br> Name of the playlist is : {{ name }} <br>
 {% for s in songs %}
 <br>
 <audio controls>

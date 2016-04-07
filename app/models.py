@@ -57,6 +57,7 @@ class P2S(models.Model):
     song=models.ForeignKey(Song)
     playlist = models.ForeignKey(Playlist)
 
+# links a member to a playlist - the rating the particular member gave to the list
 class Rate(models.Model):
     class Meta:
         db_table = 'rating'

@@ -234,7 +234,7 @@ def view_playlist(request,id):
     songs=[]
     for i in p2s:
         songs.append(i.song)
-    return render (request,"view_playlist.html",{'songs': songs,'val': val, 'id': id})
+    return render (request,"view_playlist.html",{'songs': songs,'val': val, 'id': id,'name': playlist.name})
 
 #this function deletes a playlist. Should be a post request, but didnt feel the need to do that here
 @login_required
@@ -279,3 +279,33 @@ def rate(request):
         playlist.save()
         r.save()
         return HttpResponse(str(playlist.rating))
+
+@login_required
+def edit_playlist(request,id):
+    user=request.user
+    member=Member.objects.get(user=user)
+    playlist = Playlist.objects.get(id=id)
+    if request.method == 'GET':
+        songs = Song.objects.order_by('-votes')
+        return render(request,'create_playlist.html',{'songs': songs, 'is_edit': True, 'playlist': playlist})
+    else:
+        print (request.POST)
+        name = request.POST["name"]
+        shareable = request.POST.get("shareable",False)
+        if shareable : shareable=True
+        clone_text = str(datetime.datetime.now()) + member.name
+        #clone text will ensure that you can clone a playlist only once. further code details in clone_playlist() method
+        p2s = P2S.objects.filter(playlist=playlist)
+        for i in p2s:
+            i.delete()
+        songs = request.POST.getlist('songs')
+        playlist.shareable=shareable
+        playlist.clone_text=clone_text
+        playlist.name=name
+        playlist.save()
+        for i in songs:
+            s=Song.objects.get(id=i)
+            p2s = P2S(playlist=playlist,song=s)
+            p2s.save()
+        messages.success(request,"playlist edited successfully")
+        return HttpResponseRedirect("/my_playlists")

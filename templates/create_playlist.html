@@ -20,7 +20,7 @@
             {% endblock %}
 <form method="POST">
     {% csrf_token %}
-    Enter the name of the new Playlist : <input type="text" name="name"> <br> <br>
+    Enter the name of the Playlist : <input type="text" name="name" value="{{ playlist.name }}"> <br> <br>
     Do you want to make the Playlist public ?  ( A public playlist is viewable to all users ) <br>
     <input type="radio" name="shareable">Yes
 <table>
@@ -42,6 +42,9 @@
             {% endfor %}
             </tbody>
         </table>
+
+    {% if is_edit %}
+    <input type="hidden" name="edit" value="true"> {% endif %}
     <button type="submit">Submit</button>
     </form>
 </body>
