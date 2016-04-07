@@ -5,18 +5,20 @@
     <title>Shared Playlists</title>
 </head>
 <body>
-
 <a href="/all_songs"> View All Songs</a> <br>
 <a href="/create_playlist">Create a New Playlist</a> <br>
 <a href="/shared_playlists">View Public Playlists</a> <br>
 <a href="/my_playlists">View My Playlists</a> <br><a href="logout">Logout </a> <br> <br>
 
-Playlists shared by other users:
-{% for p,s in playlists %}
-Name of Playlist : {{ p.name }}
-Shared by : {{ s }}
-<a href="/playlist/{{ p.id }}"></a>
-<button onclick="">Clone Playlist</button>
+
+Your Playlists: <br>
+{% for p in playlists %}
+ <br>
+Name of Playlist : {{ p.name }}  <br>
+Nature : {% if p.shareable %} Public {% else %} Private {% endif %} <br>
+<a href="/playlist/{{ p.id }}">View Details</a> <br>
+<a href="/edit_playlist/{{ p.id }}">Edit Playlist</a> <br>
+<br>
 {% endfor %}
 </body>
 </html>

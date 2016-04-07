@@ -5,6 +5,13 @@
     <title>Create Playlist</title>
 </head>
 <body>
+
+<a href="/all_songs"> View All Songs</a> <br>
+<a href="/create_playlist">Create a New Playlist</a> <br>
+<a href="/shared_playlists">View Public Playlists</a> <br>
+<a href="/my_playlists">View My Playlists</a> <br>
+<a href="logout">Logout </a> <br> <br>
+
 <form method="POST">
     {% csrf_token %}
     Enter the name of the new Playlist : <input type="text" name="name"> <br> <br>

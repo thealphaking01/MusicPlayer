@@ -145,10 +145,10 @@ def shared_playlists(request):
     user = request.user
     member = Member.objects.get(user=user)
     if request.method == 'GET':
-        playlists= Playlist.objects.filter(shareable=True)
+        playlists= list(Playlist.objects.filter(shareable=True))
         shared_by = []
         for i in playlists:
-            if playlists.member==member:
+            if i.member==member:
                 shared_by.append("You")
             else:
                 shared_by.append(playlists.member.name)
@@ -191,4 +191,4 @@ def my_playlists(request):
     user=request.user
     member = Member.objects.get(user=user)
     playlists = Playlist.objects.filter(member=member)
-    return render(request,"my_playlists",{'playlists': playlists, "member": member})
+    return render(request,"my_playlists.html",{'playlists': playlists, "member": member,'my':True})
