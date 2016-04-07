@@ -36,6 +36,27 @@ class M2SVote(models.Model):
     #if no entry is present, then the member/user hasn't voted yet
     upvote = models.BooleanField(default=False)
 
+class Playlist(models.Model):
+    class Meta:
+        db_table = 'playlist'
+
+    shareable= models.BooleanField(default=False)
+    name = models.TextField(default="Private Playlist")
+    clone_text = models.TextField(max_length=255,default="")
+    member = models.ForeignKey(Member)
+
+    def __str__(self): return self.name + str(self.member.name)
+
+#links a song to a playlist: songs can be in multiple playlists and a playlist can have many songs
+class P2S(models.Model):
+    class Meta:
+        db_table = 'p2s'
+
+    song=models.ForeignKey(Song)
+    playlist = models.ForeignKey(Playlist)
+
 admin.site.register(Member)
 admin.site.register(Song)
 admin.site.register(M2SVote)
+admin.site.register(Playlist)
+admin.site.register(P2S)

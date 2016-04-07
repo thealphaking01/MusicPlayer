@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Playlist</title>
+</head>
+<body>
+<form method="POST">
+    {% csrf_token %}
+    Enter the name of the new Playlist : <input type="text" name="name"> <br> <br>
+    Do you want to make the Playlist public ?  ( A public playlist is viewable to all users ) <br>
+    <input type="radio" name="shareable">Yes
+<table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Song Name</th>
+                <th>Number of Votes</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for s in songs %}
+            <tr>
+                <th><input type="checkbox" value="{{ s.id }}" name="songs" >
+                </th>
+                <td>{{ s.name }}</td>
+                <td>{{ s.votes }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

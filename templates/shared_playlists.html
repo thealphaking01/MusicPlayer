@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shared Playlists</title>
+</head>
+<body>
+Playlists shared by other users:
+{% for p,s in playlists %}
+Name of Playlist : {{ p.name }}
+Shared by : {{ s }}
+<a href="/playlist/{{ p.id }}"></a>
+<button onclick="">Clone Playlist</button>
+{% endfor %}
+</body>
+</html>

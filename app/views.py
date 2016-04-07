@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render, redirect, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
 from django.contrib import messages
@@ -14,7 +15,7 @@ def index(request):
     if request.method=="GET":
         user = request.user
         if user.is_authenticated():
-            return HttpResponseRedirect('/playlist')
+            return HttpResponseRedirect('/all_songs')
         return render(request, 'index_page.html', {})
     elif request.method=="POST":
         query = request.POST["check"]
@@ -46,7 +47,7 @@ def index(request):
             print (user)
             login(request,user)
             print ("heya")
-            return HttpResponseRedirect("/playlist")
+            return HttpResponseRedirect("/all_songs")
         #if the person filled the login form
         else:
             email=request.POST["email"]
@@ -57,7 +58,7 @@ def index(request):
                 try:
                     member=Member.objects.get(user=user)
                     login(request,user)
-                    return HttpResponseRedirect('/playlist')
+                    return HttpResponseRedirect('/all_songs')
                 except Member.DoesNotExist:
                     # this can only happen in case of admin/special user who did not create a user through the app
                     messages.error(request,"Some Error Ocurred")
@@ -67,7 +68,7 @@ def index(request):
                 return render(request,"index_page.html", {})
 
 @login_required
-def playlist(request):
+def all_songs(request):
     user = request.user
     member = Member.objects.get(user=user)
     #to upload a song. Note that for now, I am just allowing the user to upload in .mp3 format
@@ -138,3 +139,56 @@ def upvote(request):
 def member_logout(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+@login_required
+def shared_playlists(request):
+    user = request.user
+    member = Member.objects.get(user=user)
+    if request.method == 'GET':
+        playlists= Playlist.objects.filter(shareable=True)
+        shared_by = []
+        for i in playlists:
+            if playlists.member==member:
+                shared_by.append("You")
+            else:
+                shared_by.append(playlists.member.name)
+        playlists=zip(playlists,shared_by)
+        return render(request,"shared_playlists.html",{'member': member, 'playlists': playlists})
+    # have to write something for POST request
+
+#this is the clone API.
+@login_required
+def clone_playlist(request):
+    pass
+
+@login_required
+def create_playlist(request):
+    user = request.user
+    member = Member.objects.get(user=user)
+    if request.method == 'GET':
+        songs = Song.objects.order_by('-votes')
+        return render(request,'create_playlist.html',{'songs': songs, 'is_edit': False})
+
+    if request.method == 'POST':
+        songs=request.POST.getlist('songs')
+        name = request.POST["name"]
+        shareable = request.POST.get("shareable",False)
+        if shareable : shareable=True
+        clone_text = str(datetime.datetime.now()) + member.name
+        #clone text will ensure that you can clone a playlist only once. further code details in clone_playlist() method
+        playlist = Playlist(shareable=shareable,name=name,member=member,clone_text=clone_text)
+        playlist.save()
+
+        for i in songs:
+            s=Song.objects.get(id=i)
+            p2s = P2S(playlist=playlist,song=s)
+            p2s.save()
+        messages.success(request,"playlist created successfully")
+        return HttpResponseRedirect("/my_playlists")
+
+@login_required
+def my_playlists(request):
+    user=request.user
+    member = Member.objects.get(user=user)
+    playlists = Playlist.objects.filter(member=member)
+    return render(request,"my_playlists",{'playlists': playlists, "member": member})
